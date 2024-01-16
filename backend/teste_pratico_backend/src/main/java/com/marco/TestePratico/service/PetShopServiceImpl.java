@@ -30,7 +30,7 @@ public class PetShopServiceImpl implements PetShopService{
     @Override
     public Map<String, String> bestChoice(String date, int numSmallDog, int numBigDog) {
         Map<String, String> response = new HashMap<>();
-        String name= "";
+        String[] nameAndValue = null;
 
         String[] parsedDate = date.split("-");
 
@@ -45,13 +45,14 @@ public class PetShopServiceImpl implements PetShopService{
         LocalDate ld = LocalDate.of(year, month, day);
         boolean isWeekend = isWeekend(ld);
 
-        name = calculateBestChoice(numSmallDog, numBigDog, isWeekend);
+        nameAndValue = calculateBestChoice(numSmallDog, numBigDog, isWeekend);
 
-        response.put("bestchoice", name);
+        response.put("bestchoice", nameAndValue[0]);
+        response.put("value", nameAndValue[1]);
         return response;
     }
 
-    private String calculateBestChoice(int numSmallDog, int numBigDog, boolean isWeekend) {
+    private String[] calculateBestChoice(int numSmallDog, int numBigDog, boolean isWeekend) {
         List<PetShop> petShops = getAll();
         int smallestValue = INFINITE;
         String nameChoice = "";
@@ -69,7 +70,7 @@ public class PetShopServiceImpl implements PetShopService{
             }
         }
 
-        return nameChoice;
+        return new String[]{nameChoice, String.valueOf(smallestValue)};
     }
 
     public static boolean isWeekend(LocalDate ld) {
